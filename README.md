@@ -15,8 +15,6 @@
 Python, Django, MySQL, AWS
 <br>
 
----
-
 ## 구현 기능 
 
 ### 모델링
@@ -64,3 +62,72 @@ Python, Django, MySQL, AWS
 - 사용자 결제 금액과 수량에 따라 프로덕트의 총 펀딩 금액, 총 리워드 구매 수량 업데이트 기능 구현
 
 <br>
+
+## 프로젝트 Set- Up 
+
+1. **Miniconda(가상환경 tool) 설치** <br>
+[제 블로그 게시물](https://velog.io/@mjhuh263/TIL-47-Python-Installing-Miniconda3-and-creating-virtual-envs-%EB%AF%B8%EB%8B%88%EC%BD%98%EB%8B%A4-%EC%84%A4%EC%B9%98%ED%95%98%EA%B8%B0)에 적어 놓았습니다.
+
+<br>
+
+2. **Database 생성**
+```
+$ mysql server start
+$ mysql -u root -p 
+$ mysql> create database wegotdiz character set utf8mb4 collate utf8mb4_general_ci;
+```
+<br>
+
+3. **프로젝트에 필요한 python package 설치**
+```
+$ pip install django
+$ pip install django-cors-headers
+$ pip install mysqlclient
+```
+<br>
+
+3. **Django Project, App 생성**
+```
+$ django-admin startproject WeGotDiz
+$ cd project
+$ python manage.py startapp community
+$ python manage.py startapp product
+$ python manage.py startapp purchase
+$ python manage.py startapp user
+```
+<br>
+
+4. **.gitignore 생성** <br>
+```
+cd wegotdiz -> project folder name
+touch .gitignore
+vi .gitignore -> ignore하고 싶은 키워드 추가하고 저장
+```
+5. **보안 파일 생성** <br>
+프로젝트 파일 settings.py 속 secret key 및 dabase 정보를 `my_settings.py`으로 따로 관리한다.
+
+my_settings.py 생성:
+```
+cd wegotdiz -> project folder name
+touch my_settings.py
+vi my_settings.py
+```
++) my_settings.py를 꼭 .gitignore에 추가한다.
+
+my_settings.py 속 정보:
+```
+DATABASES = {
+    'default' : {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'wegotdiz',
+        'USER': 'DB 계정명',
+        'PASSWORD': 'DB 비밀번호',
+        'HOST': 'DB 주소',
+        'PORT': '포트번호',
+    }
+}
+
+SECRET = 'django에서 생성한 시크릿키'
+```
+<br>
+
