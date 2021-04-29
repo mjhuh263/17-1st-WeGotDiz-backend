@@ -1,7 +1,6 @@
 ![다운로드](https://user-images.githubusercontent.com/65124480/109489263-f0173500-7ac9-11eb-850c-062b9f1a828d.jpg)
 
 # WeGotDiz
-<br>
 
 ## 팀 구성원
 프론트엔드  3명, 백엔드 3명
@@ -60,6 +59,62 @@ Python, Django, MySQL, AWS
 
 - 결제 진행할 프로덕트의 세부 상품 리스트 나열 기능 및 정보 입력, 결제 기능 구현 
 - 사용자 결제 금액과 수량에 따라 프로덕트의 총 펀딩 금액, 총 리워드 구매 수량 업데이트 기능 구현
+
+<br>
+
+## 프로젝트 구조 
+```
+├── WeGotDiz
+│   ├── __init__.py
+│   ├── asgi.py
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+├── community
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── migrations
+│   │   └── __init__.py
+│   ├── models.py
+│   ├── tests.py
+│   └── views.py
+├── manage.py
+├── product
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── migrations
+│   │   └── __init__.py
+│   ├── models.py
+│   ├── tests.py
+│   ├── urls.py
+│   └── views.py
+├── pull_request_template.md
+├── purchase
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── migrations
+│   │   └── __init__.py
+│   ├── models.py
+│   ├── tests.py
+│   ├── urls.py
+│   └── views.py
+├── requirements.txt
+└── user
+    ├── __init__.py
+    ├── admin.py
+    ├── apps.py
+    ├── migrations
+    │   └── __init__.py
+    ├── models.py
+    ├── tests.py
+    ├── urls.py
+    ├── utils.py
+    ├── validators.py
+    └── views.py
+```
 
 <br>
 
@@ -130,4 +185,3 @@ DATABASES = {
 SECRET = 'django에서 생성한 시크릿키'
 ```
 <br>
-
