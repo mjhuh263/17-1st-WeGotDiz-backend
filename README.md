@@ -1,4 +1,4 @@
-![다운로드](https://user-images.githubusercontent.com/65124480/109489263-f0173500-7ac9-11eb-850c-062b9f1a828d.jpg)
+![다운로드](https://user-images.githubusercontent.com/75108432/116838439-4d824c00-ac09-11eb-81db-0832c30d643a.png)
 
 # WeGotDiz
 

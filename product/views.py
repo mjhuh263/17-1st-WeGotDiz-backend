@@ -156,6 +156,23 @@ class MainView(View):
     def get(self, request, category_id=0):
     
         try:
+            
+            """
+            ORDERING
+
+            recommend(추천순)
+            date(마감일순)
+            support(서포터순)
+            price(가격순)
+            
+            ordering_options = {
+                'recommend' : '-achieved_rate',
+                'date' : 'closing_date',
+                'support' : '-total_supporters',
+                'price' : '-total_amount'
+            }
+            """
+
             ordering = request.GET.get('order', 'recommend')
             endYN    = request.GET.get('endYN',1)
             q        = Q()
@@ -168,17 +185,14 @@ class MainView(View):
             
             products = Product.objects.filter(q)
         
-            if ordering == 'recommed':
-                products = products.order_by('-achieved_rate')
-            if ordering == 'date':
-                products = products.order_by('closing_date')
-            if ordering == 'support':
-                products = products.order_by('-total_supporters')
-            if ordering == 'price':
-                products = products.order_by('-total_amount')
+            ordering_options = {
+                'recommend' : '-achieved_rate',
+                'date' : 'closing_date',
+                'support' : '-total_supporters',
+                'price' : '-total_amount'
+            }
 
-            # refactoring 필요 // a = Product.objects.prefetch_related('category_set')
-            products = products.filter() if category_id == 0 else products.filter(category__id=category_id).all()
+            products = products if category_id == 0 else products.prefetch_related('category_set').filter(category__id=category_id)
             today       = datetime.today()
             collections = Collection.objects.all()
             result      = []
@@ -196,7 +210,7 @@ class MainView(View):
                 'category_id'      : [product.category_set.first().id],
                 'id'               : product.id,
                 'maker_info_name'  : product.maker_info.name,
-                } for product in products
+                } for product in products.order_by(ordering_options[ordering])
             ]
 
             for collection in collections:
