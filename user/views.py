@@ -4,7 +4,7 @@ import bcrypt
 import jwt
 
 from json.decoder                      import JSONDecodeError
-from django.http                       import JsonResponse, HttpResponse
+from django.http                       import JsonResponse, HttpResponse, Http404
 from django.views                      import View
 from django.core.validators            import validate_email
 from django.core.exceptions            import ValidationError
@@ -25,6 +25,17 @@ class SignUpView(View):
 
     def post(self,request):
         try:
+
+            """
+            Created: 2021-02-20
+            Updated: 2021-05-04
+
+            [로그인 페이지]
+            - 이메일, 이름, 비밀번호 필수 입력
+            - 비밀번호 validate 함수 구현 후 적용
+            - 비밀번호 bcrypt 암호화 후 저장
+            """
+
             data         = json.loads(request.body)
 
             email        = data['email']
@@ -68,6 +79,15 @@ class SignInView(View):
         data = json.loads(request.body)
 
         try:
+            
+            """
+            Created: 2021-02-20
+            Updated: 2021-05-04
+
+            [로그인 페이지]
+            - 암호화 된 비밀번호와 사용자 입력 비밀번호가 일치하면 jwt token 발행
+            """
+
             email     = data.get('email', None)
             password  = data.get('password', None)
 
@@ -81,7 +101,7 @@ class SignInView(View):
 
             if bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')):
                 access_token = jwt.encode({"id" : user.id}, SECRET_KEY, algorithm=ALGORITHM)
-                return JsonResponse({"message" : "SUCCESS", "TOKEN" : access_token}, status=200)
+                return JsonResponse({"message" : "SUCCESS", "access_token" : access_token}, status=200)
 
             return JsonResponse({"message" : "UNAUTHORIZED_APPROACH"}, status=401)
 
@@ -91,58 +111,84 @@ class SignInView(View):
 class UserLikeView(View):
     @login_decorator
     def get(self, request):
-        user_info = [
-            {
-                "id"            : request.user.id,
-                "userName"      : request.user.fullname
-            }
-        ]
-        
-        likes = LikeUser.objects.filter(user=request.user.id)
-        
-        like_list = [{
-            "product_id"            : like.product.id,
-            "product_title"         : like.product.title,
-            "product_image"         : like.product.thumbnail_url,
-            "product_maker_info"    : like.product.maker_info.name,
-            "product_total_amount"  : like.product.total_amount,  
-            "product_achieved_rate" : like.product.achieved_rate, 
-            "product_category"      : [category.name for category in like.product.category_set.all()]
+        try:
+            """
+            Created: 2021-02-23
+            Updated: 2021-05-04
 
-        } for like in likes]
-        
-        return JsonResponse({"data" : {'user_info' : user_info, 'like_list' : like_list}}, status=200)
+            [마이페이지 좋아요 리스트]
+            - 사용자가 좋아요 표시한 product 리스트
+            """
+            user_info = 
+                {
+                    "id"            : request.user.id,
+                    "userName"      : request.user.fullname
+                }
+            
+            likes = LikeUser.objects.filter(user=request.user.id)
+            
+            like_list = [
+                {
+                "product_id"            : like.product.id,
+                "product_title"         : like.product.title,
+                "product_image"         : like.product.thumbnail_url,
+                "product_maker_info"    : like.product.maker_info.name,
+                "product_total_amount"  : like.product.total_amount,  
+                "product_achieved_rate" : like.product.achieved_rate, 
+                "product_category"      : [category.name for category in like.product.category_set.all()]
+
+                } for like in likes]
+
+            data = {"user_info" : user_info, "like_list" : like_list}
+            
+            return JsonResponse({"data" : data}, status=200)
+        except:
+            raise Http404
 
 class UserFundView(View):
     @login_decorator
     def get(self, request):
-        user_info = [
-            {
-                "id"            : request.user.id,
-                "userName"      : request.user.fullname
-            }
-        ]
-    
-        funding_list = [ 
-            {
-                "product_image"          : reward.product.thumbnail_url,
-                "product_date_countdown" : str((datetime.datetime.today() - reward.product.closing_date.replace(tzinfo=None)).days),
-                "product_total_amount"   : reward.product.total_amount,
-                "product_achieved_rate"  : reward.product.achieved_rate,
-                "product_title"          : reward.product.title,
-                "product_maker_info"     : reward.product.maker_info.name,
-                "product_category"       : [category.name for category in reward.product.category_set.all()]
-            }
-            for order in request.user.order_set.all()
-            for reward in order.reward.all()]
+        try:
+            """
+            Created: 2021-02-23
+            Updated: 2021-05-04
 
-        return JsonResponse({"data" : {'user_info' : user_info, 'funding_list' : funding_list}}, status=200)
+            [마이페이지 펀딩 리스트]
+            - 사용자가 펀딩한한 product 리스트
+            """
+            user_info =
+                {
+                    "id"            : request.user.id,
+                    "userName"      : request.user.fullname
+                }
+        
+            funding_list = [ 
+                {
+                    "product_image"          : reward.product.thumbnail_url,
+                    "product_date_countdown" : str((datetime.datetime.today() - reward.product.closing_date.replace(tzinfo=None)).days),
+                    "product_total_amount"   : reward.product.total_amount,
+                    "product_achieved_rate"  : reward.product.achieved_rate,
+                    "product_title"          : reward.product.title,
+                    "product_maker_info"     : reward.product.maker_info.name,
+                    "product_category"       : [category.name for category in reward.product.category_set.all()]
+                }
+                for order in request.user.order_set.all()
+                for reward in order.reward.all()]
+
+            data = {"user_info" : user_info, "funding_list" : funding_list}
+
+            return JsonResponse({"data" : data}, status=200)
+        except:
+            raise Http404
 
 class UserInfoView(View):
     @login_decorator  
     def get(self, request, product_id): 
-        user_info = {
-            'email' : request.user.email,
-            'name' : request.user.fullname
-        }
-        return JsonResponse({'user_info' : user_info}, status=200)
+        try:
+            user_info = {
+                'email' : request.user.email,
+                'name' : request.user.fullname
+            }
+            return JsonResponse({"user_info" : user_info}, status=200)
+        except:
+            raise Http404

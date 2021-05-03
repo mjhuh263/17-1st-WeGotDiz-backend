@@ -15,36 +15,69 @@ from user.utils      import login_decorator
 class RewardListView(View):  
     @login_decorator  
     def get(self, request, product_id): 
-        user  = request.user
+        try:
 
-        product = Product.objects.get(id=product_id) 
-        rewards = Reward.objects.filter(product=product)
-        
-        product_info = {
-            'id'         : product.id,
-            'title'      : product.title,
-            'maker_image': product.maker_info.user_set.all()[0].image,
-            'maker_name' : product.maker_info.name
-        }
+            """
+            Created: 2021-02-25
+            Updated: 2021-05-03
 
-        reward_list = [
-            {
-            'id'              : reward.id,
-            'name'            : reward.name + product.title,
-            'combination'     : reward.combination,
-            'price'           : reward.price, 
-            'remaining_stock' : reward.stock - reward.quantity_sold
+            [리워드 페이지]
+            - 회원 상품 세부 리워드 리스트 - product 상세 reward options 
+
+            [수량 반영]
+            - 사용자가 주문한 상품 개수, 상품 재고 수량 반영
+            """
+
+            user  = request.user
+
+            product = Product.objects.get(id=product_id) 
+            rewards = Reward.objects.filter(product=product)
+            
+            product_info = {
+                'id'         : product.id,
+                'title'      : product.title,
+                'maker_image': product.maker_info.user_set.all()[0].image,
+                'maker_name' : product.maker_info.name
             }
-        for reward in rewards]
- 
-        data = {"product_info" : product_info, "reward_list" : reward_list}
 
-        return JsonResponse({"data" : data}, status=200)
+            reward_list = [
+                {
+                'id'              : reward.id,
+                'name'            : reward.name + product.title,
+                'combination'     : reward.combination,
+                'price'           : reward.price, 
+                'remaining_stock' : reward.stock - reward.quantity_sold
+                }
+            for reward in rewards]
+
+            data = {"product_info" : product_info, "reward_list" : reward_list}
+
+            return JsonResponse({"data" : data}, status=200)
+
+        except:
+            raise Http404
 
 class RewardOrderView(View):  
     @login_decorator
     def post(self, request, product_id): 
         try:
+
+            """
+            Created: 2021-02-26
+            Updated: 2021-05-03
+
+            rewards에 id, quantity 넘어옴
+
+            [주문 페이지]
+            - 사용자 입력 배송지 주소 None, 이전 배송지도 없으면 400
+            - 사용자 입력 배송지 주소 None, 이전 배송지가 있으면 첫번쨰 주소 선택
+            - 사용자 배송지 주소 입력 시 get 또는 create
+
+            [수량 반영]
+            - 사용자가 주문한 상품, 리워드 상품 판매 수량 반영
+            - 사용자가 주문한 상품, 상품 총 달성 금액 반영
+            """
+
             data = json.loads(request.body)
             user = request.user
 
