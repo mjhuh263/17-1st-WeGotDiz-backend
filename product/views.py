@@ -156,51 +156,63 @@ class MainView(View):
     def get(self, request, category_id=0):
     
         try:
-            
-            """
-            ORDERING
 
-            recommend(추천순)
-            date(마감일순)
-            support(서포터순)
-            price(가격순)
+            """
+            order
+
+            recommend(default - 높은 달성 금액)
+            date(가까운 마감일)
+            support(많은 서포터)
+            price(높은 가격)
             
+            endYN
+
+            1(default - 전체)
+            2(진행된)
+            3(종료된)
+            """
+
+            ordering = request.GET.get('order', 'recommend')
+            endYN    = request.GET.get('endYN',1)
+
             ordering_options = {
                 'recommend' : '-achieved_rate',
                 'date' : 'closing_date',
                 'support' : '-total_supporters',
                 'price' : '-total_amount'
             }
-            """
 
-            ordering = request.GET.get('order', 'recommend')
-            endYN    = request.GET.get('endYN',1)
-            q        = Q()
+            '''
+            endYN Q객체 + 딕셔너리
+
+            q = Q()
+            endYN_options = {
+                '1' : Q(),
+                '2' : Q(closing_date__gt=datetime.today()),
+                '3' : Q(closing_date__lte=datetime.today())
+            }
+
+            q &= endYN_options[endYN]
+            '''
+            q = Q()
 
             if endYN == '2':
                 q &= Q(closing_date__gt=datetime.today())
 
             if endYN == '3':
                 q &= Q(closing_date__lte=datetime.today())
-            
+
             products = Product.objects.filter(q)
-        
-            ordering_options = {
-                'recommend' : '-achieved_rate',
-                'date' : 'closing_date',
-                'support' : '-total_supporters',
-                'price' : '-total_amount'
-            }
 
             products = products if category_id == 0 else products.prefetch_related('category_set').filter(category__id=category_id)
+
             today       = datetime.today()
             collections = Collection.objects.all()
-            result      = []
-            
+
             product_list = [{
                 'category_image'   : [product.category_set.first().image], 
                 'title'            : product.title,
-                'goal_amout'       : product.goal_amount,
+                'goal_amount'      : product.goal_amount,
                 'toal_amount'      : product.total_amount,
                 'achieved_rate'    : product.achieved_rate,
                 'total_supporters' : product.total_supporters,
@@ -214,8 +226,8 @@ class MainView(View):
             ]
 
             for collection in collections:
-                projects = collection.product.all()[:2]
-                planData = [
+                projects = collection.product.all()
+                planevent_data = [
                     {
                         "planId"   : collection.id,
                         "planTitle": collection.name,
@@ -232,9 +244,8 @@ class MainView(View):
                         ]
                     }
                 ]
-                result.append(planData)
 
-            return JsonResponse( {'DATA' :  product_list, 'result' : result}, status = 200 )
+            return JsonResponse( {'data' :  product_list, 'collection' : planevent_data}, status = 200 )
             
         except:
             raise Http404
