@@ -154,7 +154,7 @@ class LikeView(View):
 class MainView(View):
 
     def get(self, request, category_id=0):
-      
+    
         try:
             ordering = request.GET.get('order', 'recommend')
             endYN    = request.GET.get('endYN',1)
@@ -177,6 +177,7 @@ class MainView(View):
             if ordering == 'price':
                 products = products.order_by('-total_amount')
 
+            # refactoring 필요 // a = Product.objects.prefetch_related('category_set')
             products = products.filter() if category_id == 0 else products.filter(category__id=category_id).all()
             today       = datetime.today()
             collections = Collection.objects.all()
