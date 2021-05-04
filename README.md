@@ -18,6 +18,16 @@ Python, Django, MySQL
 와디즈를 모티브로 진행한 크라우드 펀딩 웹사이트 프로젝트입니다.
 <br>
 
+## Document
+
+[API Document](https://www.notion.so/Wegotdiz-API-Document-49c065fa5a024232a744a4e160eef3bd, "API Document")
+
+<br>
+
+## 프로젝트 결과 시연 영상
+
+[Youtube](https://www.youtube.com/watch?v=EJ8G5lN2NZs&t=26s)
+
 ## 프로젝트 구조
 프로젝트 구조는 아래와 같습니다.
 <br>
@@ -35,6 +45,7 @@ Apps:
 <br>
 
 ```
+.
 ├── WeGotDiz
 │   ├── __init__.py
 │   ├── asgi.py
@@ -170,7 +181,7 @@ touch .gitignore
 vi .gitignore -> ignore하고 싶은 키워드 추가하고 저장
 ```
 5. **보안 파일 생성** <br>
-프로젝트 파일 settings.py 속 secret key 및 dabase 정보를 `my_settings.py`으로 따로 관리한다.
+프로젝트 파일 settings.py 속 secret key 및 database 정보를 `my_settings.py`으로 따로 관리한다.
 
 my_settings.py 생성:
 ```

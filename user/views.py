@@ -119,11 +119,10 @@ class UserLikeView(View):
             [마이페이지 좋아요 리스트]
             - 사용자가 좋아요 표시한 product 리스트
             """
-            user_info = 
-                {
-                    "id"            : request.user.id,
-                    "userName"      : request.user.fullname
-                }
+            user_info = {
+                        "id"            : request.user.id,
+                        "userName"      : request.user.fullname
+            }
             
             likes = LikeUser.objects.filter(user=request.user.id)
             
@@ -156,11 +155,10 @@ class UserFundView(View):
             [마이페이지 펀딩 리스트]
             - 사용자가 펀딩한한 product 리스트
             """
-            user_info =
-                {
-                    "id"            : request.user.id,
-                    "userName"      : request.user.fullname
-                }
+            user_info = {
+                        "id"            : request.user.id,
+                        "userName"      : request.user.fullname
+            }
         
             funding_list = [ 
                 {

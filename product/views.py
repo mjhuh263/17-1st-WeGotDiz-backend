@@ -259,7 +259,7 @@ class MainView(View):
                 'achieved_rate'    : product.achieved_rate,
                 'total_supporters' : product.total_supporters,
                 'closing_date'     : str((product.closing_date - today).days),
-                'thumbnail'        : product.thumbnail_url,
+                'thumbnail_url'        : product.thumbnail_url,
                 'category'         : [product.category_set.first().name],
                 'category_id'      : [product.category_set.first().id],
                 'id'               : product.id,
