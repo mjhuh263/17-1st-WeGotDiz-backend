@@ -21,17 +21,16 @@ class ProductDetailView(View):
     
     def get(self, request, product_id):
 
+        """
+        Created: 2021-02-25
+        Updated: 2021-05-03
+
+        [비회원 스토리 - product 상세 정보페이지]
+        - 상품 상세 정보 확인 가능
+        - 상품 좋아요 반영 불가능
+        """
+
         try:
-
-            """
-            Created: 2021-02-25
-            Updated: 2021-05-03
-
-            [비회원 스토리 - product 상세 정보페이지]
-            - 상품 상세 정보 확인 가능
-            - 상품 좋아요 반영 불가능
-            """
-
             tab          = request.GET.get('tab', '스토리')
             product      = Product.objects.get(id=product_id)    
             today        = datetime.today()
@@ -82,18 +81,17 @@ class UserProductDetailView(View):
     
     @login_decorator
     def get(self, request, product_id):
+
+        """
+        Created: 2021-02-24
+        Updated: 2021-05-03
+
+        [회원 스토리 - product 상세 정보페이지]
+        - 상품 상세 정보 확인 가능
+        - 상품 좋아요 반영 가능
+        """
         
         try:
-            
-            """
-            Created: 2021-02-24
-            Updated: 2021-05-03
-
-            [회원 스토리 - product 상세 정보페이지]
-            - 상품 상세 정보 확인 가능
-            - 상품 좋아요 반영 가능
-            """
-
             tab          = request.GET.get('tab', '스토리')
             product      = Product.objects.get(id=product_id)
             total_likes  = product.total_likes
@@ -152,17 +150,16 @@ class LikeView(View):
     @login_decorator
     def post(self, request, product_id):
 
+        """
+        Created: 2021-02-26
+        Updated: 2021-05-03
+
+        [회원 전용 좋아요]
+        - 로그인 회원만 product 좋아요 기능 반영
+        - 총 좋아요수 집계 반영
+        """
+
         try:
-
-            """
-            Created: 2021-02-26
-            Updated: 2021-05-03
-
-            [회원 전용 좋아요]
-            - 로그인 회원만 product 좋아요 기능 반영
-            - 총 좋아요수 집계 반영
-            """
-
             user_id     = request.user.id
             product     = Product.objects.get(id=product_id)
             total_likes = product.total_likes
@@ -185,36 +182,35 @@ class LikeView(View):
 class MainView(View):
 
     def get(self, request, category_id=0):
+
+        """
+        Created: 2021-02-18
+        Updated: 2021-05-03
+
+        [매인패이지] 
+        - 카테고리, 날짜 필터 기능
+        - 정렬 기능
+
+        ~ 카테고리(Category)
+        - 1~12가지
+        
+        ~ 날짜(endYN)
+        - 1(default - 전체)
+        - 2(진행된)
+        - 3(종료된)
+
+        ~ 정렬(ordering)
+        - recommend(default - 추천순)
+        - date(마감임박순)
+        - support(응원참여자순)
+        - price(펀딩액순)
+
+        [collection - 기획전]
+        - product가 해당되는 기획전 등록
+        - 메인페이지에 기획전 상품 배치
+        """
     
         try:
-
-            """
-            Created: 2021-02-18
-            Updated: 2021-05-03
-
-            [매인패이지] 
-            - 카테고리, 날짜 필터 기능
-            - 정렬 기능
-
-            ~ 카테고리(Category)
-            - 1~12가지
-            
-            ~ 날짜(endYN)
-            - 1(default - 전체)
-            - 2(진행된)
-            - 3(종료된)
-
-            ~ 정렬(ordering)
-            - recommend(default - 추천순)
-            - date(마감임박순)
-            - support(응원참여자순)
-            - price(펀딩액순)
-
-            [collection - 기획전]
-            - product가 해당되는 기획전 등록
-            - 메인페이지에 기획전 상품 배치
-            """
-
             ordering = request.GET.get('order', 'recommend')
             endYN    = request.GET.get('endYN',1)
 

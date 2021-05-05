@@ -24,20 +24,19 @@ MINIMUM_PASSWORD_LENGTH  = 8
 class SignUpView(View):
 
     def post(self,request):
+
+        """
+        Created: 2021-02-20
+        Updated: 2021-05-04
+
+        [로그인 페이지]
+        - 이메일, 이름, 비밀번호 필수 입력
+        - 비밀번호 validate 함수 구현 후 적용
+        - 비밀번호 bcrypt 암호화 후 저장
+        """
+
         try:
-
-            """
-            Created: 2021-02-20
-            Updated: 2021-05-04
-
-            [로그인 페이지]
-            - 이메일, 이름, 비밀번호 필수 입력
-            - 비밀번호 validate 함수 구현 후 적용
-            - 비밀번호 bcrypt 암호화 후 저장
-            """
-
             data         = json.loads(request.body)
-
             email        = data['email']
             full_name    = data['fullname']
             password     = data['password']
@@ -76,18 +75,17 @@ class SignUpView(View):
 class SignInView(View):
 
     def post(self, request):
-        data = json.loads(request.body)
+
+        """
+        Created: 2021-02-20
+        Updated: 2021-05-04
+
+        [로그인 페이지]
+        - 암호화 된 비밀번호와 사용자 입력 비밀번호가 일치하면 jwt token 발행
+        """
 
         try:
-            
-            """
-            Created: 2021-02-20
-            Updated: 2021-05-04
-
-            [로그인 페이지]
-            - 암호화 된 비밀번호와 사용자 입력 비밀번호가 일치하면 jwt token 발행
-            """
-
+            data = json.loads(request.body)
             email     = data.get('email', None)
             password  = data.get('password', None)
 
@@ -109,16 +107,19 @@ class SignInView(View):
             return JsonResponse({"message" : "KEY_ERROR"}, status=400)
 
 class UserLikeView(View):
+
     @login_decorator
     def get(self, request):
-        try:
-            """
-            Created: 2021-02-23
-            Updated: 2021-05-04
 
-            [마이페이지 좋아요 리스트]
-            - 사용자가 좋아요 표시한 product 리스트
-            """
+        """
+        Created: 2021-02-23
+        Updated: 2021-05-04
+
+        [마이페이지 좋아요 리스트]
+        - 사용자가 좋아요 표시한 product 리스트
+        """
+
+        try:
             user_info = {
                         "id"            : request.user.id,
                         "userName"      : request.user.fullname
@@ -141,20 +142,24 @@ class UserLikeView(View):
             data = {"user_info" : user_info, "like_list" : like_list}
             
             return JsonResponse({"data" : data}, status=200)
+
         except:
             raise Http404
 
 class UserFundView(View):
+
     @login_decorator
     def get(self, request):
-        try:
-            """
-            Created: 2021-02-23
-            Updated: 2021-05-04
 
-            [마이페이지 펀딩 리스트]
-            - 사용자가 펀딩한한 product 리스트
-            """
+        """
+        Created: 2021-02-23
+        Updated: 2021-05-04
+
+        [마이페이지 펀딩 리스트]
+        - 사용자가 펀딩한 product 리스트
+        """
+
+        try:
             user_info = {
                         "id"            : request.user.id,
                         "userName"      : request.user.fullname
@@ -176,10 +181,12 @@ class UserFundView(View):
             data = {"user_info" : user_info, "funding_list" : funding_list}
 
             return JsonResponse({"data" : data}, status=200)
+
         except:
             raise Http404
 
 class UserInfoView(View):
+
     @login_decorator  
     def get(self, request, product_id): 
         try:
@@ -188,5 +195,6 @@ class UserInfoView(View):
                 'name' : request.user.fullname
             }
             return JsonResponse({"user_info" : user_info}, status=200)
+            
         except:
             raise Http404

@@ -13,21 +13,22 @@ from purchase.models import Address, Order, RewardOrder
 from user.utils      import login_decorator
 
 class RewardListView(View):  
+
     @login_decorator  
     def get(self, request, product_id): 
+
+        """
+        Created: 2021-02-25
+        Updated: 2021-05-03
+
+        [리워드 페이지]
+        - 상품 세부 리워드 리스트 - product 상세 reward options 
+
+        [수량 반영]
+        - 사용자가 주문한 상품 개수, 상품 재고 수량 반영
+        """
+
         try:
-
-            """
-            Created: 2021-02-25
-            Updated: 2021-05-03
-
-            [리워드 페이지]
-            - 회원 상품 세부 리워드 리스트 - product 상세 reward options 
-
-            [수량 반영]
-            - 사용자가 주문한 상품 개수, 상품 재고 수량 반영
-            """
-
             user  = request.user
 
             product = Product.objects.get(id=product_id) 
@@ -57,27 +58,28 @@ class RewardListView(View):
         except:
             raise Http404
 
-class RewardOrderView(View):  
+class RewardOrderView(View): 
+
     @login_decorator
-    def post(self, request, product_id): 
+    def post(self, request, product_id):
+
+        """
+        Created: 2021-02-26
+        Updated: 2021-05-03
+
+        rewards에 id, quantity 넘어옴
+
+        [주문 페이지]
+        - 사용자 입력 배송지 주소 None, 이전 배송지도 없으면 400
+        - 사용자 입력 배송지 주소 None, 이전 배송지가 있으면 첫번쨰 주소 선택
+        - 사용자 배송지 주소 입력 시 get 또는 create
+
+        [수량 반영]
+        - 사용자가 주문한 상품, 리워드 상품 판매 수량 반영
+        - 사용자가 주문한 상품, 상품 총 달성 금액 반영
+        """
+
         try:
-
-            """
-            Created: 2021-02-26
-            Updated: 2021-05-03
-
-            rewards에 id, quantity 넘어옴
-
-            [주문 페이지]
-            - 사용자 입력 배송지 주소 None, 이전 배송지도 없으면 400
-            - 사용자 입력 배송지 주소 None, 이전 배송지가 있으면 첫번쨰 주소 선택
-            - 사용자 배송지 주소 입력 시 get 또는 create
-
-            [수량 반영]
-            - 사용자가 주문한 상품, 리워드 상품 판매 수량 반영
-            - 사용자가 주문한 상품, 상품 총 달성 금액 반영
-            """
-
             data = json.loads(request.body)
             user = request.user
 
