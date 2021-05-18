@@ -101,7 +101,7 @@ class SignInView(View):
                 access_token = jwt.encode({"id" : user.id}, SECRET_KEY, algorithm=ALGORITHM)
                 return JsonResponse({"message" : "SUCCESS", "access_token" : access_token}, status=200)
 
-            return JsonResponse({"message" : "UNAUTHORIZED_APPROACH"}, status=401)
+            return JsonResponse({"message" : "INVALID_REQUEST"}, status=400)
 
         except KeyError:
             return JsonResponse({"message" : "KEY_ERROR"}, status=400)
